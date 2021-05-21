@@ -1,24 +1,27 @@
 #include <mrm-servo.h>
 
-// Angle is being increased from 0 counterclockwise to 300 degrees
-#define MAXIMUM_DEGREES 300                       // Depends on servo model.
-#define SET_DEGREES 290                           // Move servo to this predefined angle.
-#define SWEEP 0                                   // 0 - sweep, 1 position servo at SET_DEGREES.
+// Angle is being increased from 0 counterclockwise to MAXIMUM_DEGREES degrees
+#define MAXIMUM_DEGREES 300                     // Maximum servo angle, model specific
+#define PIN 18                                  // Servo connected to pin 18
+#define SET_DEGREES 290                         // Fixed angle
+#define SWEEP 0                                 // 0 - sweep, 1 position servo at SET_DEGREES
 
-Mrm_servo mrm_servo;                              // Object representing servo.
-uint16_t degrees = 0;                             // Current angle.
+Mrm_servo mrm_servo;                            // Object representing servo
+uint16_t degrees = 0;
 
 void setup() {
-  mrm_servo.add(18, "Servo1", 0, 300, 0.5, 2.5);  // Connect servo to GPIO 18.
+                                                // Connect servo to GPIO 18
+                                                // PWM between 0.5 and 2.5 ms, may be model specific
+  mrm_servo.add(PIN, "Servo1", 0, MAXIMUM_DEGREES, 0.5, 2.5); 
 #if !SWEEP
-  mrm_servo.write(SET_DEGREES);                   // Position servo.
-  while(1);                                       // Stop the program and do not enter loop().
+  mrm_servo.write(SET_DEGREES);
+  while(1);
 #endif
 }
 
 void loop() {
-  mrm_servo.write(degrees);                       // Postion servo.
+  mrm_servo.write(degrees);                       // Postion servo
   delay(10);
-  if (++degrees == MAXIMUM_DEGREES)               // First increase by and and then compare to maximum.
-    degrees = 0;                                  // Reset and sweep again.
+  if (++degrees == MAXIMUM_DEGREES)               // First increase by and and then compare to maximum
+    degrees = 0;                                  // Reset
 }
