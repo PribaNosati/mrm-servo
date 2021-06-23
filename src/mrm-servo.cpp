@@ -84,7 +84,7 @@ void Mrm_servo::test()
 	while (!robotContainer->userBreak()) {
 		for (uint8_t deviceNumber = 0; deviceNumber < nextFree; deviceNumber++) {
 			write(degrees, deviceNumber);
-			print("%i\n\r", degrees);
+			robotContainer->print("%i\n\r", degrees);
 		}
 		robotContainer->delayMs(ms);
 		if (degrees + step < _minDegrees || degrees + step > _maxDegrees)
@@ -92,7 +92,7 @@ void Mrm_servo::test()
 		degrees += step;
 	}
 
-	print("\n\rTest over.\n\r");
+	robotContainer->print("\n\rTest over.\n\r");
 	robotContainer->end();
 }
 
@@ -118,22 +118,22 @@ void Mrm_servo::write( uint16_t degrees, uint8_t servoNumber) {
 */
 void Mrm_servo::writeInteractive() {
 	// Select motor
-	print("Enter servo number [0-%i]\n\r", nextFree - 1);
+	robotContainer->print("Enter servo number [0-%i]\n\r", nextFree - 1);
 	uint16_t selectedMotor = robotContainer->serialReadNumber(3000, 500, nextFree - 1 > 9, nextFree - 1, false);
 	if (selectedMotor != 0xFFFF) {
-		print("\n\rTest motor %i\n\r", selectedMotor);
+		robotContainer->print("\n\rTest motor %i\n\r", selectedMotor);
 
 		// Select speed
 		// bool fixedSpeed = false;
-		print("Enter angle \n\r");
+		robotContainer->print("Enter angle \n\r");
 		uint16_t degrees = robotContainer->serialReadNumber(2000, 500, false);
 		if (degrees != 0xFFFF) {
 			write(degrees, selectedMotor);
-			print("OK\n\r");
+			robotContainer->print("OK\n\r");
 		}
 		else
-			print("Timeout\n\r");
+			robotContainer->print("Timeout\n\r");
 	}
 	else
-		print("Timeout\n\r");
+		robotContainer->print("Timeout\n\r");
 }
