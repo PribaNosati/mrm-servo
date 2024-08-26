@@ -59,8 +59,11 @@ void Mrm_servo::add(uint8_t gpioPin, char* deviceName, uint16_t minDegrees, uint
 	float tickLength = (1000 / (float)MRM_SERVO_FREQUENCY_HZ) / ((1 << timerWidth) - 1); //tickLength = pulsePeriod/(2^timerWidthBits-1) * 1000, in ms. 
 	f = 1 / tickLength;
 	
+	//*****In the new Espressif verion there 2 commands will be obsolete and will have to be commented:
 	/*double resFreq = */ledcSetup(nextFree, MRM_SERVO_FREQUENCY_HZ, timerWidth); // nextFree is channel number, which can be 0 - 15.
 	ledcAttachPin(gpioPin, nextFree); // gpioPin assigned to channel nextFree
+	//*****Instead, this should be uncommented and tested:
+	//ledcAttach(nextFree, MRM_SERVO_FREQUENCY_HZ, timerWidth);
 
 	nextFree++;
 
@@ -94,7 +97,7 @@ void Mrm_servo::test()
 		while (!robotContainer->userBreak()) {
 			
 				write(degrees, deviceNumber);
-				robotContainer->print("%i\n\r", degrees);
+				print("%i\n\r", degrees);
 
 			robotContainer->delayMs(ms);
 			if (degrees + step < (*_minDegrees)[deviceNumber] || degrees + step > (*_maxDegrees)[deviceNumber])
@@ -103,7 +106,7 @@ void Mrm_servo::test()
 		}
 	}
 
-	robotContainer->print("\n\rTest over.\n\r");
+	print("\n\rTest over.\n\r");
 	robotContainer->end();
 }
 
@@ -114,7 +117,7 @@ void Mrm_servo::test()
 */
 void Mrm_servo::write( uint16_t degrees, uint8_t servoNumber, uint16_t ms) {
 	if (servoNumber >= nextFree) {
-		//robotContainer->print("Servo: %i, limit %i failed\n\r", servoNumber, nextFree);
+		//print("Servo: %i, limit %i failed\n\r", servoNumber, nextFree);
 		strcpy(errorMessage, "Servo doesn't exist");
 		return;
 	}
@@ -140,22 +143,22 @@ void Mrm_servo::write( uint16_t degrees, uint8_t servoNumber, uint16_t ms) {
 */
 void Mrm_servo::writeInteractive() {
 	// Select motor
-	robotContainer->print("Enter servo number [0-%i]\n\r", nextFree - 1);
+	print("Enter servo number [0-%i]\n\r", nextFree - 1);
 	uint16_t selectedMotor = robotContainer->serialReadNumber(3000, 500, nextFree - 1 > 9, nextFree - 1, false);
 	if (selectedMotor != 0xFFFF) {
-		robotContainer->print("\n\rTest motor %i\n\r", selectedMotor);
+		print("\n\rTest motor %i\n\r", selectedMotor);
 
 		// Select speed
 		// bool fixedSpeed = false;
-		robotContainer->print("Enter angle \n\r");
+		print("Enter angle \n\r");
 		uint16_t degrees = robotContainer->serialReadNumber(2000, 500, false);
 		if (degrees != 0xFFFF) {
 			write(degrees, selectedMotor);
-			robotContainer->print("OK\n\r");
+			print("OK\n\r");
 		}
 		else
-			robotContainer->print("Timeout\n\r");
+			print("Timeout\n\r");
 	}
 	else
-		robotContainer->print("Timeout\n\r");
+		print("Timeout\n\r");
 }

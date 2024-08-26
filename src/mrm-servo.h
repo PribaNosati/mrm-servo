@@ -2,7 +2,6 @@
 #include "Arduino.h"
 #include <esp32-hal-ledc.h>
 #include <mrm-board.h>
-#include "mrm-servo.h"
 
 /**
 Purpose: MRMS servo library
