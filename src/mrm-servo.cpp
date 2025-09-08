@@ -129,7 +129,7 @@ void Mrm_servo::write( uint16_t degrees, uint8_t servoNumber, uint16_t ms) {
 	// 	uint16_t currentDegrees = map(millis(), startMs, startMs + ms, (*_currentDegrees)[servoNumber], degrees);
 	// 	ledcWrite(servoNumber, map(currentDegrees, (*_minDegrees)[servoNumber], (*_maxDegrees)[servoNumber], 
 	// 		(*_minDegreesPulseMs)[servoNumber] * f, (*_maxDegreesPulseMs)[servoNumber] * f));
-	// 	robotContainer->delayMs(10);
+	// 	delayMs(10);
 	// }
 	(*_currentDegrees)[servoNumber] = degrees;
 
