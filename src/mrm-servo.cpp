@@ -59,8 +59,11 @@ void Mrm_servo::add(uint8_t gpioPin, char* deviceName, uint16_t minDegrees, uint
 	float tickLength = (1000 / (float)MRM_SERVO_FREQUENCY_HZ) / ((1 << timerWidth) - 1); //tickLength = pulsePeriod/(2^timerWidthBits-1) * 1000, in ms. 
 	f = 1 / tickLength;
 	
-	#define OLD_ESPRESSIF_VERSION 0
-	#if OLD_ESPRESSIF_VERSION
+	//Espressif changed API ( https://docs.espressif.com/projects/arduino-esp32/en/latest/migration_guides/2.x_to_3.0.html?highlight=ledcattachpin ) :
+	//"ledcAttach used to set up the LEDC pin (merged ledcSetup and ledcAttachPin functions)."
+	// Therefore for versions 3.0.0 and newer we must use ledcAttach(channel, freq, resolution_bits)
+	#define NEW_ESPRESSIF_VERSION 0
+	#if NEW_ESPRESSIF_VERSION
 	ledcAttach(nextFree, MRM_SERVO_FREQUENCY_HZ, timerWidth);
 	#else
 	/*double resFreq = */ledcSetup(nextFree, MRM_SERVO_FREQUENCY_HZ, timerWidth); // nextFree is channel number, which can be 0 - 15.
